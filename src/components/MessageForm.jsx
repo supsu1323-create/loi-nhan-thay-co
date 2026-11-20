@@ -45,7 +45,8 @@ export default function MessageForm({ onSuccess, showToast }) {
       if (isPublic) onSuccess()
     } catch (err) {
       console.error(err)
-      showToast('Có lỗi xảy ra, thử lại nhé!', 'error')
+      const msg = err?.message || err?.error_description || 'Có lỗi xảy ra, thử lại nhé!'
+      showToast(msg, 'error')
     } finally {
       setLoading(false)
     }

@@ -157,7 +157,10 @@ export default function StoryQRGenerator() {
     const qrX = qrCX - qrSize / 2
     const qrY = qrCY - qrSize / 2
 
-    const siteUrl = window.location.origin
+    let siteUrl = window.location.origin
+    if (siteUrl.includes('-git-') || siteUrl.includes('-sup-c287')) {
+      siteUrl = 'https://loi-nhan-thay-co.vercel.app'
+    }
 
     try {
       const qrDataUrl = await QRCode.toDataURL(siteUrl, {
