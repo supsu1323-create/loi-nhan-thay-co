@@ -1,0 +1,13 @@
+node_modules
+dist
+.env
+.env.local
+*.log
+
+# Workspace legacy files
+tien_ich_dich/
+exported_views/
+*.pem
+*.py
+*.cs
+ferrari_f8_geometry.json
