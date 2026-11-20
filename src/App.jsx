@@ -1,11 +1,12 @@
 import { Routes, Route, Link } from 'react-router-dom'
 import { useState, useCallback } from 'react'
-import { Lock } from 'lucide-react'
+import { Lock, AlertCircle } from 'lucide-react'
 import Header from './components/Header'
 import MessageForm from './components/MessageForm'
 import PublicBoard from './components/PublicBoard'
 import SecretCorner from './components/SecretCorner'
 import Toast from './components/Toast'
+import { isSupabaseConfigured } from './lib/supabase'
 
 /* ───────── CẤU HÌNH DỄ SỬA ───────── */
 export const APP_TITLE = 'Có điều muốn nói không?'
@@ -37,6 +38,14 @@ function HomePage() {
 
   return (
     <div className="min-h-screen bg-cream">
+      {!isSupabaseConfigured && (
+        <div className="bg-amber-50/95 border-b border-amber-200/80 px-4 py-2.5 text-center text-xs text-amber-800 flex items-center justify-center gap-1.5">
+          <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+          <span>
+            <strong>Chưa kết nối Supabase:</strong> Web cần 2 biến môi trường trên Vercel để lưu lời nhắn vào cơ sở dữ liệu.
+          </span>
+        </div>
+      )}
       <Header messageCount={messageCount} />
 
       <main className="max-w-4xl mx-auto px-4 pb-24">

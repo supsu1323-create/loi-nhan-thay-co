@@ -14,16 +14,21 @@ export default function PublicBoard({ refreshKey, onCountChange }) {
   /* ── Fetch public messages ── */
   const fetchMessages = async () => {
     setLoading(true)
-    const { data, error } = await supabase
-      .from('messages')
-      .select('*')
-      .eq('is_public', true)
-      .order('created_at', { ascending: false })
+    try {
+      const { data, error } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('is_public', true)
+        .order('created_at', { ascending: false })
 
-    if (!error && data) {
-      setMessages(data)
+      if (!error && data) {
+        setMessages(data)
+      }
+    } catch (err) {
+      console.warn('Fetch messages error:', err)
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   useEffect(() => {
@@ -37,21 +42,25 @@ export default function PublicBoard({ refreshKey, onCountChange }) {
 
   /* ── Realtime subscription ── */
   useEffect(() => {
-    const channel = supabase
-      .channel('public-messages')
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'messages' },
-        (payload) => {
-          if (payload.new && payload.new.is_public) {
-            setMessages((prev) => [payload.new, ...prev])
+    try {
+      const channel = supabase
+        .channel('public-messages')
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'messages' },
+          (payload) => {
+            if (payload.new && payload.new.is_public) {
+              setMessages((prev) => [payload.new, ...prev])
+            }
           }
-        }
-      )
-      .subscribe()
+        )
+        .subscribe()
 
-    return () => {
-      supabase.removeChannel(channel)
+      return () => {
+        supabase.removeChannel(channel)
+      }
+    } catch (err) {
+      console.warn('Realtime error:', err)
     }
   }, [])
 
