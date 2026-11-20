@@ -60,3 +60,8 @@ $$;
 
 -- 7. Bật Realtime cho bảng messages (để tin nhắn mới hiện ngay)
 ALTER PUBLICATION supabase_realtime ADD TABLE public.messages;
+
+-- 8. Cấp quyền truy cập bảng cho role anon và authenticated
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT ALL ON TABLE public.messages TO anon, authenticated, service_role;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO anon, authenticated, service_role;
